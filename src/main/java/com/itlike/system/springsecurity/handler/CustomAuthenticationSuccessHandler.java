@@ -45,7 +45,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
         List<SysMenu> MenuList = menuList.stream().filter(item -> item != null && !item.getType().equals(2)).collect(Collectors.toList());
         List<SysMenu> sysMenus = sysMenuService.makeTree(MenuList, 0L);
         List<SysMenu> routerList = menuList.stream().filter(item -> item.getType().equals(1)).collect(Collectors.toList());
-        redisTemplate.opsForValue().set("token",token,30, TimeUnit.MINUTES);//30分钟
+        redisTemplate.opsForValue().set("token",token,100, TimeUnit.MINUTES);//30分钟
         HashMap<String, Object> map = new HashMap<>();
         map.put("token",token);
         map.put("code",code);

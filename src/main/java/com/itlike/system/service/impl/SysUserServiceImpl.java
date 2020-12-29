@@ -2,11 +2,14 @@ package com.itlike.system.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.itlike.system.entity.SysUser;
+import com.itlike.system.entity.query.SysUserQuery;
 import com.itlike.system.mapper.SysUserMapper;
 import com.itlike.system.service.SysUserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +65,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
 //        } finally {
 //            out.close();
 //        }
+    }
+
+    @Override
+    public IPage<SysUser> Query(SysUserQuery sysUserQuery) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        if(StringUtils.isNotEmpty(sysUserQuery.getName())){
+            queryWrapper.lambda().like(SysUser::getUsername,sysUserQuery.getName());
+        }
+        if(StringUtils.isNotEmpty(sysUserQuery.getMobile())){
+            queryWrapper.lambda().like(SysUser::getMobile,sysUserQuery.getMobile());
+        }
+        if(StringUtils.isNotEmpty(sysUserQuery.getPid())){
+            queryWrapper.lambda().like(SysUser::getDeptId,sysUserQuery.getPid());
+        }
+        return baseMapper.selectPage(sysUserQuery.getPage(),queryWrapper);
     }
 }

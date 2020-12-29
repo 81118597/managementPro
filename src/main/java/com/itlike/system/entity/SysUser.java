@@ -25,8 +25,8 @@ public class SysUser implements Serializable,UserDetails {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "用户 ID")
-    @TableId(value = "id", type = IdType.ID_WORKER_STR)
-    private String id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     @ApiModelProperty(value = "用户名")
     private String username;
@@ -66,6 +66,9 @@ public class SysUser implements Serializable,UserDetails {
 
     @ApiModelProperty(value = "密码更新时间")
     private Date pwdUpdateDate;
+
+    @ApiModelProperty(value = "密码更新时间")
+    private String deptId;
 
     @TableField(exist = false)
     private List<SysMenu> menuList;
