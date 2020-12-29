@@ -1,0 +1,28 @@
+server:
+  port: 80
+spring:
+  # 数据源配置
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3305/zyq?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8
+    #mysql8版本以上驱动包指定新的驱动类
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #   数据源其他配置, 在 DruidConfig配置类中手动绑定
+    initialSize: 8
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true # springboot2.2版本后,要手动开启对delete和put方法的处理
+  redis:
+    host: localhost
+    port: 6379
+    password:
+mybatis-plus:
+  mapper-locations: classpath:com/itlike/system/mapper/xml/*.xml

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itlike.system.mapper.SysMenuMapper">
+
+    <select id="selectPermissionByUserId" resultType="com.itlike.system.entity.SysMenu">
+        select
+         m.id,
+         m.parent_id,
+         m.label,
+         m.code,
+         m.path,
+         m.name,
+         m.url,
+         m.sort,
+         m.type,
+         m.icon,
+         m.remark,
+         m.create_date,
+         m.update_date
+        from sys_user u
+        join sys_user_role ur on u.id=ur.user_id
+        join sys_role r on r.id=ur.role_id
+        join sys_role_menu rm on rm.role_id=r.id
+        join sys_menu m on m.id=rm.menu_id
+        where u.id=#{userId}
+    </select>
+    <select id="findByRoleId" resultType="com.itlike.system.entity.SysMenu">
+        select
+         m.id,
+         m.parent_id,
+         m.label,
+         m.code,
+         m.path,
+         m.name,
+         m.url,
+         m.sort,
+         m.type,
+         m.icon,
+         m.remark,
+         m.create_date,
+         m.update_date
+         from sys_role r
+         join sys_role_menu rm on rm.role_id=r.id
+         join sys_menu m on m.id=rm.menu_id
+         where r.id=#{roleId}
+    </select>
+</mapper>
