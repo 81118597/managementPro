@@ -19,9 +19,9 @@ public interface SysMenuService extends IService<SysMenu> {
     //递归查询
     List<SysMenu> queryList();
     //根据用户id
-    List<SysMenu> selectPermissionByUserId(String userId);
+    List<SysMenu> selectPermissionByUserId(Long userId);
     //根据角色id
-    List<SysMenu> findByRoleId(String roleId);
+    List<SysMenu> findByRoleId(Long roleId);
     //递归查询
     public  List<SysMenu> makeTree(List<SysMenu> menuList,Long pid);
 

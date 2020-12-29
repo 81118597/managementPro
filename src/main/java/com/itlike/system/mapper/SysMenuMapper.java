@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
-    List<SysMenu> selectPermissionByUserId(@Param("userId") String userId);
+    List<SysMenu> selectPermissionByUserId(@Param("userId") Long userId);
 
-    List<SysMenu> findByRoleId(@Param("roleId") String roleId);
+    List<SysMenu> findByRoleId(@Param("roleId") Long roleId);
 }

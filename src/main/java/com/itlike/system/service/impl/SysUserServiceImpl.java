@@ -70,14 +70,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper,SysUser> imple
     @Override
     public IPage<SysUser> Query(SysUserQuery sysUserQuery) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        if(StringUtils.isNotEmpty(sysUserQuery.getName())){
-            queryWrapper.lambda().like(SysUser::getUsername,sysUserQuery.getName());
+        if(StringUtils.isNotEmpty(sysUserQuery.getUsername())){
+            queryWrapper.lambda().like(SysUser::getUsername,sysUserQuery.getUsername());
         }
         if(StringUtils.isNotEmpty(sysUserQuery.getMobile())){
-            queryWrapper.lambda().like(SysUser::getMobile,sysUserQuery.getMobile());
+            queryWrapper.lambda().eq(SysUser::getMobile,sysUserQuery.getMobile());
         }
         if(StringUtils.isNotEmpty(sysUserQuery.getPid())){
-            queryWrapper.lambda().like(SysUser::getDeptId,sysUserQuery.getPid());
+            queryWrapper.lambda().eq(SysUser::getDeptId,sysUserQuery.getPid());
+        }
+        if(StringUtils.isNotEmpty(sysUserQuery.getEmail())){
+            queryWrapper.lambda().eq(SysUser::getEmail,sysUserQuery.getEmail());
         }
         return baseMapper.selectPage(sysUserQuery.getPage(),queryWrapper);
     }

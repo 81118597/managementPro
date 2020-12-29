@@ -8,9 +8,11 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class SysUserQuery extends BaseRequest<SysUser> {
-    private String name;
+    private String username;
 
     private String mobile;
+
+    private String email;
 
     private String pid;
 }

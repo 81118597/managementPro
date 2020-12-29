@@ -33,12 +33,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<SysMenu> selectPermissionByUserId(String userId) {
+    public List<SysMenu> selectPermissionByUserId(Long userId) {
         return baseMapper.selectPermissionByUserId(userId);
     }
 
     @Override
-    public List<SysMenu> findByRoleId(String roleId) {
+    public List<SysMenu> findByRoleId(Long roleId) {
         return baseMapper.findByRoleId(roleId);
     }
     @Override

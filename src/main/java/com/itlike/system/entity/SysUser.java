@@ -67,7 +67,7 @@ public class SysUser implements Serializable,UserDetails {
     @ApiModelProperty(value = "密码更新时间")
     private Date pwdUpdateDate;
 
-    @ApiModelProperty(value = "密码更新时间")
+    @ApiModelProperty(value = "部门Id")
     private String deptId;
 
     @TableField(exist = false)
