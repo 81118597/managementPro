@@ -3,11 +3,15 @@ package com.itlike.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.itlike.system.entity.SysRole;
+import com.itlike.system.entity.UserRole;
 import com.itlike.system.entity.query.SysRoleQuery;
 import com.itlike.system.service.SysRoleService;
 import com.itlike.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -47,5 +51,17 @@ public class SysRoleController {
         sysRoleService.removeById(RoleId);
         return Result.ok();
     }
+    //————————————————————————————————————分配角色
+    @GetMapping("/getRouleIdByUser/{userId}")
+    public Result getRouleIdByUser(@PathVariable Long userId){
+        UserRole rouleIdByUser = sysRoleService.getRouleIdByUser(userId);
+        return Result.ok().data("RoleUser",rouleIdByUser);
+    }
+    @PostMapping("/assignRole")
+    public Result assignRole(@RequestBody UserRole userRole){
+        sysRoleService.assignRole(userRole);
+        return Result.ok();
+    }
+
 }
 

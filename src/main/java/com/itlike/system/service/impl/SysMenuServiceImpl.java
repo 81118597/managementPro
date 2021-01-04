@@ -3,11 +3,19 @@ package com.itlike.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.itlike.system.entity.RoleMenu;
 import com.itlike.system.entity.SysMenu;
+import com.itlike.system.entity.SysUser;
 import com.itlike.system.entity.TreeVo;
+import com.itlike.system.entity.query.RoleMenuQuery;
+import com.itlike.system.entity.query.RoleMenuTreeQuery;
+import com.itlike.system.mapper.RoleMenuMapper;
 import com.itlike.system.mapper.SysMenuMapper;
 import com.itlike.system.service.SysMenuService;
+import com.itlike.system.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +31,12 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
-
+    @Autowired
+    private SysMenuMapper sysMenuMapper;
+    @Autowired
+    private RoleMenuMapper roleMenuMapper;
+    @Autowired
+    private SysUserService sysUserService;
     @Override
     public List<SysMenu> queryList() {
         QueryWrapper<SysMenu> wrapper = new QueryWrapper<>();
@@ -91,6 +104,56 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         int row = baseMapper.deleteBatchIds(idList);
         return row;
     }
+
+    @Override
+    public SysMenu getInfo(Long menuId) {
+        SysMenu sysMenu = baseMapper.selectById(menuId);
+        SysMenu Parent = sysMenuMapper.selectById(sysMenu.getParentId());
+        if(Parent==null){
+            sysMenu.setParentId(0L);
+            sysMenu.setParentName("顶级菜单");
+        }else{
+            sysMenu.setParentName(Parent.getLabel());
+        }
+        return sysMenu;
+    }
+    @Transactional
+    @Override
+    public int saveAssignRole(RoleMenuTreeQuery query) {
+        List<TreeVo> list = query.getList();
+        Long roleId = query.getRoleId();
+        List<Long> collect = list.stream().filter(item -> item != null).map(item -> item.getId()).collect(Collectors.toList());
+        QueryWrapper<RoleMenu> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(RoleMenu::getRoleId,roleId);
+        roleMenuMapper.delete(wrapper);
+        return roleMenuMapper.saveRolePermissions(query.getRoleId(),collect);
+    }
+
+    @Override
+    public List<TreeVo> MenuTree(RoleMenuQuery query) {
+        //1.查询当前用户的所有权限
+        SysUser user = sysUserService.getById(query.getUserId());
+        List<SysMenu> menus = baseMapper.selectPermissionByUserId(user.getId());
+        List<SysMenu> menuList = baseMapper.findByRoleId(query.getRoleId());
+        List<TreeVo> listTree=new ArrayList<>();
+        for (SysMenu menu : menus) {
+            TreeVo treeVo=new TreeVo();
+            treeVo.setId(menu.getId());
+            treeVo.setPid(menu.getParentId());
+            treeVo.setName(menu.getLabel());
+            if(menuList.size()>0){
+                for (SysMenu sysMenu : menuList) {
+                    if(menu.getId().equals(sysMenu.getId())){
+                        treeVo.setChecked(true);
+                        break;
+                    }
+                }
+            }
+            listTree.add(treeVo);
+        }
+        return listTree;
+    }
+
     public void selectChildListById(Long id,List<Long> idList){
         List<SysMenu> menus = baseMapper.selectList(new QueryWrapper<SysMenu>().lambda().eq(SysMenu::getParentId,id).select(SysMenu::getId));
         menus.stream().forEach(item->{

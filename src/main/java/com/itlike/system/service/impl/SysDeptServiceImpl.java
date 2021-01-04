@@ -3,17 +3,23 @@ package com.itlike.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.itlike.system.entity.RoleMenu;
 import com.itlike.system.entity.SysDept;
 import com.itlike.system.entity.query.SysDeptQuery;
+import com.itlike.system.mapper.RoleMenuMapper;
 import com.itlike.system.mapper.SysDeptMapper;
 import com.itlike.system.service.SysDeptService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
+    @Autowired
+    private RoleMenuMapper roleMenuMapper;
     @Override
     public IPage<SysDept> Query(SysDeptQuery sysDeptQuery) {
         QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();

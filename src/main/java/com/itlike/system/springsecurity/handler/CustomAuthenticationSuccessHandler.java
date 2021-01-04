@@ -51,6 +51,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
         map.put("code",code);
         map.put("menuList",sysMenus);
         map.put("routerList",routerList);
+         map.put("userId",user.getId());
         Result result = Result.ok().data(map);
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter writer = response.getWriter();

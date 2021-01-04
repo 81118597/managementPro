@@ -1,9 +1,6 @@
 package com.itlike.system.springsecurity.config;
 
-import com.itlike.system.springsecurity.handler.CustomAccessDeineHandler;
-import com.itlike.system.springsecurity.handler.CustomAuthenticationFailureHandler;
-import com.itlike.system.springsecurity.handler.CustomAuthenticationSuccessHandler;
-import com.itlike.system.springsecurity.handler.CustomizeAuthenticationEntryPoint;
+import com.itlike.system.springsecurity.handler.*;
 import com.itlike.system.springsecurity.handler.code.ImageCodeValidateFilter;
 import com.itlike.system.springsecurity.service.CustomerUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomAccessDeineHandler customAccessDeineHandler;
     @Autowired
     private ImageCodeValidateFilter imageCodeValidateFilter;
+    @Autowired
+    private CustomerLogoutSuccessHandler customerLogoutSuccessHandler;
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customerUserDetailsService);
@@ -52,6 +51,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(customizeAuthenticationEntryPoint)
-                .accessDeniedHandler(customAccessDeineHandler);
+                .accessDeniedHandler(customAccessDeineHandler)
+                .and()
+                .logout().logoutUrl("/api/user/loginOut").logoutSuccessHandler(customerLogoutSuccessHandler);
     }
 }

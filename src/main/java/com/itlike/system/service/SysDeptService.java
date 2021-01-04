@@ -11,4 +11,5 @@ public interface SysDeptService extends IService<SysDept> {
     IPage<SysDept> Query(SysDeptQuery sysDeptQuery);
 
     List<SysDept> dept();
+
 }

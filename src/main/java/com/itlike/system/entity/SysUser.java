@@ -1,5 +1,6 @@
 package com.itlike.system.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -59,9 +60,11 @@ public class SysUser implements Serializable,UserDetails {
     private String email;
 
     @ApiModelProperty(value = "创建时间")
+    @TableField(fill = FieldFill.INSERT)
     private Date createDate;
 
     @ApiModelProperty(value = "更新时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateDate;
 
     @ApiModelProperty(value = "密码更新时间")
@@ -72,8 +75,12 @@ public class SysUser implements Serializable,UserDetails {
 
     @TableField(exist = false)
     private List<SysMenu> menuList;
+
     @TableField(exist = false)
     Collection<? extends GrantedAuthority> authorities;
+
+    @TableField(exist = false)
+    private String deptName;
     //帐户是否过期(1 未过期，0已过期)
     @Override
     public boolean isAccountNonExpired() {

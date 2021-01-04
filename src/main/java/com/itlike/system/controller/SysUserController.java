@@ -1,11 +1,14 @@
 package com.itlike.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.itlike.system.entity.SysDept;
 import com.itlike.system.entity.SysUser;
 import com.itlike.system.entity.query.SysUserQuery;
+import com.itlike.system.service.SysDeptService;
 import com.itlike.system.service.SysUserService;
 import com.itlike.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +20,10 @@ import java.io.IOException;
 public class SysUserController {
     @Autowired
     private SysUserService sysUserService;
-    @GetMapping("/userList")
-    public Result userList(){
-        SysUser byId = sysUserService.getById(9);
-        return Result.ok().data("list",byId);
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private SysDeptService sysDeptService;
     @GetMapping("/code/image")
     public void imageCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         sysUserService.imageCode(request,response);
@@ -33,12 +35,16 @@ public class SysUserController {
     }
     @PostMapping("/adduser")
     public Result adduser(@RequestBody SysUser sysUser){
+        sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+        System.out.println(sysUser);
         sysUserService.save(sysUser);
         return Result.ok();
     }
     @GetMapping("/{userId}")
     public Result info(@PathVariable Long userId){
         SysUser user = sysUserService.getById(userId);
+        SysDept dept = sysDeptService.getById(user.getDeptId());
+        user.setDeptName(dept.getName());
         return Result.ok().data("user",user);
     }
     @PutMapping("/updauser")
