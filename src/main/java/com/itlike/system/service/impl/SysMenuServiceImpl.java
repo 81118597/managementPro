@@ -133,7 +133,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public List<TreeVo> MenuTree(RoleMenuQuery query) {
         //1.查询当前用户的所有权限
         SysUser user = sysUserService.getById(query.getUserId());
-        List<SysMenu> menus = baseMapper.selectPermissionByUserId(user.getId());
+        List<SysMenu> menus = baseMapper.selectList(null);
+
         List<SysMenu> menuList = baseMapper.findByRoleId(query.getRoleId());
         List<TreeVo> listTree=new ArrayList<>();
         for (SysMenu menu : menus) {

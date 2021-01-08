@@ -4,6 +4,7 @@ import com.itlike.system.springsecurity.handler.*;
 import com.itlike.system.springsecurity.handler.code.ImageCodeValidateFilter;
 import com.itlike.system.springsecurity.service.CustomerUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -46,7 +47,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/user/login","/api/user/code/image","/swagger-ui.html","/swagger-resources/**","/*/api-docs").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/api/user/login","/api/user/code/image").permitAll()
+                .antMatchers( "/v2/**","/favicon.ico","/webjars/springfox-swagger-ui/**","/static/**", "/webjars/**", "/v2/api-docs", "/v2/feign-docs",
+                        "/swagger-resources/configuration/ui",
+                        "/swagger-resources", "/swagger-resources/configuration/security",
+                        "/swagger-ui.html", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

@@ -43,28 +43,39 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
     private RedisTemplate redisTemplate;
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        if(httpServletRequest.getMethod().equalsIgnoreCase("post")&&"/api/user/login".equals(httpServletRequest.getRequestURI())){
-            try {
-                validate(httpServletRequest);
-            }catch (AuthenticationException e){
-                customAuthenticationFailureHandler.onAuthenticationFailure(httpServletRequest,httpServletResponse,e);
-                return;
-            }
-        }else {
-            String uri = httpServletRequest.getRequestURI();
-            if(!uri.equals("/api/user/code/image")){
+        String url = httpServletRequest.getRequestURI();
+        if(StringUtils.contains(httpServletRequest.getServletPath(),"swagger")
+        ||StringUtils.contains(httpServletRequest.getServletPath(),"webjars")
+        ||StringUtils.contains(httpServletRequest.getServletPath(),"csrf")
+        ||StringUtils.contains(httpServletRequest.getServletPath(),"favicon")
+        ||StringUtils.contains(httpServletRequest.getServletPath(),"v2")){
+        } else{
+            if(httpServletRequest.getMethod().equalsIgnoreCase("post")&&"/api/user/login".equals(httpServletRequest.getRequestURI())){
                 try {
-                    validationToken(httpServletRequest);
+                    validate(httpServletRequest);
                 }catch (AuthenticationException e){
                     customAuthenticationFailureHandler.onAuthenticationFailure(httpServletRequest,httpServletResponse,e);
                     return;
+                }
+            }else{
+                if(!url.equals("/api/user/code/image")){
+                    try {
+                        validationToken(httpServletRequest);
+                    }catch (AuthenticationException e){
+                        customAuthenticationFailureHandler.onAuthenticationFailure(httpServletRequest,httpServletResponse,e);
+                        return;
+                    }
                 }
             }
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
     public void validationToken(HttpServletRequest request) throws IOException {
-        String header = request.getHeader("token");
+        String header = request.getHeader("Authorization");
+        System.out.println(header+"token");
+        if(StringUtils.isEmpty(header)){
+            throw new TokenException("验证token失败");
+        }
         String token =(String)redisTemplate.opsForValue().get("token");
         if(!header.equals(token)){
             throw new TokenException("验证token失败");
